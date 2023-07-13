@@ -16,7 +16,7 @@ SELECT title, content, category, status FROM posts LIMIT ? OFFSET ?;
 SELECT title, content, category, status FROM posts where id=?;
 
 -- name: updatePost :execresult
-UPDATE posts SET title=?, content=?, category=?, status=? WHERE id=?;
+UPDATE posts SET title=?, content=?, category=?, status=?, updated_date=? WHERE id=?;
 
 -- name: deletePost :execresult
 DELETE FROM posts WHERE id=?;

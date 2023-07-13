@@ -116,15 +116,16 @@ func (q *Queries) getPostById(ctx context.Context, id int32) (getPostByIdRow, er
 }
 
 const updatePost = `-- name: updatePost :execresult
-UPDATE posts SET title=?, content=?, category=?, status=? WHERE id=?
+UPDATE posts SET title=?, content=?, category=?, status=?, updated_date=? WHERE id=?
 `
 
 type updatePostParams struct {
-	Title    string `json:"title"`
-	Content  string `json:"content"`
-	Category string `json:"category"`
-	Status   string `json:"status"`
-	ID       int32  `json:"id"`
+	Title       string       `json:"title"`
+	Content     string       `json:"content"`
+	Category    string       `json:"category"`
+	Status      string       `json:"status"`
+	UpdatedDate sql.NullTime `json:"updated_date"`
+	ID          int32        `json:"id"`
 }
 
 func (q *Queries) updatePost(ctx context.Context, arg updatePostParams) (sql.Result, error) {
@@ -133,6 +134,7 @@ func (q *Queries) updatePost(ctx context.Context, arg updatePostParams) (sql.Res
 		arg.Content,
 		arg.Category,
 		arg.Status,
+		arg.UpdatedDate,
 		arg.ID,
 	)
 }
