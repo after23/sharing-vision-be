@@ -10,4 +10,7 @@ migratedown:
 sqlc:
 	docker run --rm -v "D:\Legacy Documents\go-project\sharing-vision-be:/src" -w /src kjconroy/sqlc generate
 
-.PHONY: createdb migrateup migratedown sqlc
+test:
+	go test -v -cover ./...
+
+.PHONY: createdb migrateup migratedown sqlc test
