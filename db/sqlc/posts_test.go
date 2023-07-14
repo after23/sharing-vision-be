@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomPost(t *testing.T) (createPostParams,int64) {
-	arg := createPostParams{
+func createRandomPost(t *testing.T) (CreatePostParams,int64) {
+	arg := CreatePostParams{
 		Title: util.RandomTitle(),
 		Content: util.RandomContent(),
 		Category: util.RandomCategory(),
@@ -22,7 +22,7 @@ func createRandomPost(t *testing.T) (createPostParams,int64) {
 		},
 	}
 
-	res, err := testQueries.createPost(context.Background(), arg)
+	res, err := testQueries.CreatePost(context.Background(), arg)
 	require.NoError(t, err)
 	id, err := res.LastInsertId()
 	require.NoError(t, err)
@@ -33,7 +33,7 @@ func createRandomPost(t *testing.T) (createPostParams,int64) {
 }
 
 func deleteRandomPost(t *testing.T, id int64) {
-	res, err := testQueries.deletePost(context.Background(), int32(id))
+	res, err := testQueries.DeletePost(context.Background(), int32(id))
 	require.NoError(t, err)
 	rowsAffected, err := res.RowsAffected()
 	require.NoError(t, err)
@@ -52,7 +52,7 @@ func TestGetPostById(t *testing.T) {
 	require.NotEmpty(t, postParam)
 	require.NotZero(t, id)
 
-	post, err := testQueries.getPostById(context.Background(), int32(id))
+	post, err := testQueries.GetPostById(context.Background(), int32(id))
 	require.NoError(t, err)
 	require.NotEmpty(t, post)
 
@@ -69,12 +69,12 @@ func TestGetPost(t *testing.T) {
 		ids = append(ids, id)
 	}
 
-	arg := getPostParams{
+	arg := GetPostParams{
 		Limit: 5,
 		Offset: 1,
 	}
 
-	posts, err := testQueries.getPost(context.Background(), arg)
+	posts, err := testQueries.GetPost(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, posts)
 	require.Equal(t, len(posts), 5)
@@ -92,7 +92,7 @@ func TestUpdatePost(t *testing.T) {
 	_, id := createRandomPost(t)
 	require.NotZero(t, id)
 
-	arg := updatePostParams{
+	arg := UpdatePostParams{
 		Title: util.RandomTitle(),
 		Content: util.RandomCategory(),
 		Status: util.RandomStatus(),
@@ -104,7 +104,7 @@ func TestUpdatePost(t *testing.T) {
 		ID: int32(id),
 	}
 
-	res, err := testQueries.updatePost(context.Background(), arg)
+	res, err := testQueries.UpdatePost(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, res)
 	rowsAffected, err := res.RowsAffected()

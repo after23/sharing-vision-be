@@ -10,7 +10,7 @@ import (
 	"database/sql"
 )
 
-const createPost = `-- name: createPost :execresult
+const createPost = `-- name: CreatePost :execresult
 INSERT INTO posts (
     title,
     content,
@@ -22,7 +22,7 @@ INSERT INTO posts (
 )
 `
 
-type createPostParams struct {
+type CreatePostParams struct {
 	Title       string       `json:"title"`
 	Content     string       `json:"content"`
 	Category    string       `json:"category"`
@@ -30,7 +30,7 @@ type createPostParams struct {
 	CreatedDate sql.NullTime `json:"created_date"`
 }
 
-func (q *Queries) createPost(ctx context.Context, arg createPostParams) (sql.Result, error) {
+func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (sql.Result, error) {
 	return q.db.ExecContext(ctx, createPost,
 		arg.Title,
 		arg.Content,
@@ -40,39 +40,39 @@ func (q *Queries) createPost(ctx context.Context, arg createPostParams) (sql.Res
 	)
 }
 
-const deletePost = `-- name: deletePost :execresult
+const deletePost = `-- name: DeletePost :execresult
 DELETE FROM posts WHERE id=?
 `
 
-func (q *Queries) deletePost(ctx context.Context, id int32) (sql.Result, error) {
+func (q *Queries) DeletePost(ctx context.Context, id int32) (sql.Result, error) {
 	return q.db.ExecContext(ctx, deletePost, id)
 }
 
-const getPost = `-- name: getPost :many
+const getPost = `-- name: GetPost :many
 SELECT title, content, category, status FROM posts LIMIT ? OFFSET ?
 `
 
-type getPostParams struct {
+type GetPostParams struct {
 	Limit  int32 `json:"limit"`
 	Offset int32 `json:"offset"`
 }
 
-type getPostRow struct {
+type GetPostRow struct {
 	Title    string `json:"title"`
 	Content  string `json:"content"`
 	Category string `json:"category"`
 	Status   string `json:"status"`
 }
 
-func (q *Queries) getPost(ctx context.Context, arg getPostParams) ([]getPostRow, error) {
+func (q *Queries) GetPost(ctx context.Context, arg GetPostParams) ([]GetPostRow, error) {
 	rows, err := q.db.QueryContext(ctx, getPost, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []getPostRow{}
+	items := []GetPostRow{}
 	for rows.Next() {
-		var i getPostRow
+		var i GetPostRow
 		if err := rows.Scan(
 			&i.Title,
 			&i.Content,
@@ -92,20 +92,20 @@ func (q *Queries) getPost(ctx context.Context, arg getPostParams) ([]getPostRow,
 	return items, nil
 }
 
-const getPostById = `-- name: getPostById :one
+const getPostById = `-- name: GetPostById :one
 SELECT title, content, category, status FROM posts where id=?
 `
 
-type getPostByIdRow struct {
+type GetPostByIdRow struct {
 	Title    string `json:"title"`
 	Content  string `json:"content"`
 	Category string `json:"category"`
 	Status   string `json:"status"`
 }
 
-func (q *Queries) getPostById(ctx context.Context, id int32) (getPostByIdRow, error) {
+func (q *Queries) GetPostById(ctx context.Context, id int32) (GetPostByIdRow, error) {
 	row := q.db.QueryRowContext(ctx, getPostById, id)
-	var i getPostByIdRow
+	var i GetPostByIdRow
 	err := row.Scan(
 		&i.Title,
 		&i.Content,
@@ -115,11 +115,11 @@ func (q *Queries) getPostById(ctx context.Context, id int32) (getPostByIdRow, er
 	return i, err
 }
 
-const updatePost = `-- name: updatePost :execresult
+const updatePost = `-- name: UpdatePost :execresult
 UPDATE posts SET title=?, content=?, category=?, status=?, updated_date=? WHERE id=?
 `
 
-type updatePostParams struct {
+type UpdatePostParams struct {
 	Title       string       `json:"title"`
 	Content     string       `json:"content"`
 	Category    string       `json:"category"`
@@ -128,7 +128,7 @@ type updatePostParams struct {
 	ID          int32        `json:"id"`
 }
 
-func (q *Queries) updatePost(ctx context.Context, arg updatePostParams) (sql.Result, error) {
+func (q *Queries) UpdatePost(ctx context.Context, arg UpdatePostParams) (sql.Result, error) {
 	return q.db.ExecContext(ctx, updatePost,
 		arg.Title,
 		arg.Content,

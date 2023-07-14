@@ -1,4 +1,4 @@
--- name: createPost :execresult
+-- name: CreatePost :execresult
 INSERT INTO posts (
     title,
     content,
@@ -9,14 +9,14 @@ INSERT INTO posts (
     ?, ?, ?, ?, ?
 );
 
--- name: getPost :many
+-- name: GetPost :many
 SELECT title, content, category, status FROM posts LIMIT ? OFFSET ?;
 
--- name: getPostById :one
+-- name: GetPostById :one
 SELECT title, content, category, status FROM posts where id=?;
 
--- name: updatePost :execresult
+-- name: UpdatePost :execresult
 UPDATE posts SET title=?, content=?, category=?, status=?, updated_date=? WHERE id=?;
 
--- name: deletePost :execresult
+-- name: DeletePost :execresult
 DELETE FROM posts WHERE id=?;
