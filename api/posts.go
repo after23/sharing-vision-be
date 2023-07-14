@@ -71,3 +71,30 @@ func (server *Server) getPost(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, post)
 	return
 }
+
+type listPostRequest struct {
+	PageId int32 `uri:"offset" binding:"required,min=1"`
+	PageSize int32 `uri:"id" binding:"required,min=5"`
+}
+
+func (server *Server) listPost(ctx *gin.Context) {
+	var req listPostRequest
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errResponse(err))
+		return
+	}
+
+	arg := db.GetPostParams{
+		Limit: req.PageSize,
+		Offset: (req.PageId-1)*req.PageSize,
+	}
+
+	posts, err := server.GetPost(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, posts)
+	return
+}
