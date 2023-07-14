@@ -135,7 +135,7 @@ func (server *Server) updatePost(ctx *gin.Context) {
 	}
 
 	if _, err := server.GetPostById(ctx, post.ID); err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{})
+		ctx.Status(http.StatusNotFound)
 		return
 	}
 	_, err := server.UpdatePost(ctx, arg)
@@ -146,5 +146,27 @@ func (server *Server) updatePost(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{})
+	return
+}
+
+func (server *Server) deletePost(ctx *gin.Context) {
+	var req getPostRequest
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errResponse(err))
+		return
+	}
+
+	if _, err := server.GetPostById(ctx, req.ID); err != nil {
+		ctx.Status(http.StatusNotFound)
+		return
+	}
+
+	_, err := server.DeletePost(ctx, req.ID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errResponse(err))
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
 	return
 }

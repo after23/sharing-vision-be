@@ -19,6 +19,7 @@ func NewServer(q *db.Queries) *Server {
 	router.GET("/article/:id", server.getPost)
 	router.GET("/article/:id/:offset", server.listPost)
 	router.PATCH("/article/:id", server.updatePost)
+	router.DELETE("/article/:id", server.deletePost)
 
 	server.router = router
 	return server
