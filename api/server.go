@@ -23,7 +23,7 @@ func NewServer(q *db.Queries) *Server {
 
 // Start run the http server on the specified address
 func (server *Server) Start(address string) error {
-	return server.Start(address)
+	return server.router.Run(address)
 }
 
 func errResponse(err error) gin.H {

@@ -113,3 +113,4 @@ func TestUpdatePost(t *testing.T) {
 
 	deleteRandomPost(t, id)
 }
+

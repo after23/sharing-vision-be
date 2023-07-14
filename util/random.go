@@ -7,7 +7,7 @@ import (
 )
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz"
-var status = []string{"published", "draft", "thrashed"}
+var status = []string{"publish", "draft", "thrash"}
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
@@ -26,11 +26,11 @@ func randomString(n int) string {
 }
 
 func RandomTitle() string {
-	return randomString(10)
+	return randomString(20)
 }
 
 func RandomContent() string {
-	return randomString(50)
+	return randomString(200)
 }
 
 func RandomStatus() string {
@@ -39,5 +39,5 @@ func RandomStatus() string {
 }
 
 func RandomCategory() string {
-	return randomString(5)
+	return randomString(3)
 }
