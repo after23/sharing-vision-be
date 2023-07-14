@@ -119,7 +119,9 @@ func (server *Server) updatePost(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errResponse(err))
 		return
 	}
-	req.UpdatedDate = time.Now().UTC().Add(7*time.Hour)
+	if req.UpdatedDate.IsZero() {
+		req.UpdatedDate = time.Now().UTC().Add(7*time.Hour)
+	}
 	
 
 	arg := db.UpdatePostParams{
@@ -157,7 +159,11 @@ func (server *Server) deletePost(ctx *gin.Context) {
 	}
 
 	if _, err := server.GetPostById(ctx, req.ID); err != nil {
-		ctx.Status(http.StatusNotFound)
+		if err == sql.ErrNoRows {
+			ctx.Status(http.StatusNotFound)
+			return	
+		}
+		ctx.JSON(http.StatusInternalServerError, errResponse(err))
 		return
 	}
 
