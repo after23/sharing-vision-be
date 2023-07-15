@@ -1,0 +1,42 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.20"
+      - uses: mirromutth/mysql-action@v1.1
+        with:
+          host port: 1357 # Optional, default value is 3306. The port of host
+          container port: 3306 # Optional, default value is 3306. The port of container
+          character set server: "utf8" # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+          collation server: "utf8_general_ci" # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+          mysql version: "8.0" # Optional, default value is "latest". The version of the MySQL
+          mysql database: "article" # Optional, default value is "test". The specified database which will be create
+          mysql root password: "secret" # Required if "mysql user" is empty, default is empty. The root superuser password
+
+      - name: install golang migrate
+        run: |
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz
+          sudo mv migrate /usr/bin/migrate
+          which migrate
+
+      - name: Run migrations
+        run: make migrateup
+
+      - name: Test
+        run: go test -v ./...
