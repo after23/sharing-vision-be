@@ -29,6 +29,15 @@ jobs:
           sudo mv migrate /usr/bin/migrate
           which migrate
 
+      - name: setup app.env
+        run: |
+          touch app.env
+          echo 'DB_DRIVER=mysql' >> app.env
+          echo 'DB_USERNAME=root' >> app.env
+          echo 'DB_PASSWORD=root' >> app.env
+          echo 'DB_ADDRESS=127.0.0.1:3306' >> app.env
+          echo 'SERVER_ADDRESS=localhost:1234' >> app.env
+
       - name: Run migrations
         run: make githubmigrateup
 
