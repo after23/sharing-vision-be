@@ -1,9 +1,13 @@
 ## Database Migration
 
-Database migration dibuat menggunakan tools [golang-migrate](https://github.com/golang-migrate/migrate).\
-Untuk menjalankan migration up gunakan:\
-`migrate -path db/migration -database "mysql://root:secret@tcp(localhost:1357)/article" -verbose up`\
-Untuk menjalankan migration down gunakan:\
+Database migration dibuat menggunakan tools [golang-migrate](https://github.com/golang-migrate/migrate).
+
+Untuk menjalankan migration up gunakan:
+
+`migrate -path db/migration -database "mysql://root:secret@tcp(localhost:1357)/article" -verbose up`
+
+Untuk menjalankan migration down gunakan:
+
 `migrate -path db/migration -database "mysql://root:secret@tcp(localhost:1357)/article" -verbose down `
 
 > Sesuaikan connection string database : mysql://**username**:**password**@tcp(**address**:**port**)/**database_name** \
@@ -21,6 +25,8 @@ SERVER_ADDRESS=localhost:1234
 ```
 
 **SERVER_ADDRESS** adalah address dimana server (api) akan berjalan
+
+> Simpan file app.env pada root folder
 
 > Sesuaikan konfigurasi DB_USERNAME, DB_PASSWORD, dan DB_ADDRESS
 
