@@ -4,6 +4,9 @@ createdb:
 migrateup:
 	migrate -path db/migration -database "mysql://root:secret@tcp(localhost:1357)/article" -verbose up
 
+githubmigrateup:
+	migrate -path db/migration -database "mysql://root:secret@tcp(127.0.0.1:1357)/article" -verbose up
+
 migratedown:
 	migrate -path db/migration -database "mysql://root:secret@tcp(localhost:1357)/article" -verbose down 
 
@@ -13,4 +16,4 @@ sqlc:
 test:
 	go test -v -cover ./...
 
-.PHONY: createdb migrateup migratedown sqlc test
+.PHONY: createdb migrateup migratedown sqlc test githubmigrateup
