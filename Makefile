@@ -5,7 +5,7 @@ migrateup:
 	migrate -path db/migration -database "mysql://root:secret@tcp(localhost:1357)/article" -verbose up
 
 githubmigrateup:
-	migrate -path db/migration -database "mysql://root:secret@tcp(127.0.0.1:1357)/article" -verbose up
+	migrate -path db/migration -database "mysql://root:root@tcp(127.0.0.1:3306)/article" -verbose up
 
 migratedown:
 	migrate -path db/migration -database "mysql://root:secret@tcp(localhost:1357)/article" -verbose down 
