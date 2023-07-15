@@ -49,7 +49,7 @@ func (q *Queries) DeletePost(ctx context.Context, id int32) (sql.Result, error) 
 }
 
 const getPost = `-- name: GetPost :many
-SELECT title, content, category, status FROM posts LIMIT ? OFFSET ?
+SELECT id, title, content, category, status FROM posts LIMIT ? OFFSET ?
 `
 
 type GetPostParams struct {
@@ -58,6 +58,7 @@ type GetPostParams struct {
 }
 
 type GetPostRow struct {
+	ID       int32  `json:"id"`
 	Title    string `json:"title"`
 	Content  string `json:"content"`
 	Category string `json:"category"`
@@ -74,6 +75,7 @@ func (q *Queries) GetPost(ctx context.Context, arg GetPostParams) ([]GetPostRow,
 	for rows.Next() {
 		var i GetPostRow
 		if err := rows.Scan(
+			&i.ID,
 			&i.Title,
 			&i.Content,
 			&i.Category,
@@ -93,10 +95,11 @@ func (q *Queries) GetPost(ctx context.Context, arg GetPostParams) ([]GetPostRow,
 }
 
 const getPostById = `-- name: GetPostById :one
-SELECT title, content, category, status FROM posts where id=?
+SELECT id, title, content, category, status FROM posts where id=?
 `
 
 type GetPostByIdRow struct {
+	ID       int32  `json:"id"`
 	Title    string `json:"title"`
 	Content  string `json:"content"`
 	Category string `json:"category"`
@@ -107,12 +110,59 @@ func (q *Queries) GetPostById(ctx context.Context, id int32) (GetPostByIdRow, er
 	row := q.db.QueryRowContext(ctx, getPostById, id)
 	var i GetPostByIdRow
 	err := row.Scan(
+		&i.ID,
 		&i.Title,
 		&i.Content,
 		&i.Category,
 		&i.Status,
 	)
 	return i, err
+}
+
+const getPublishedPost = `-- name: GetPublishedPost :many
+SELECT id, title, content, category, status FROM posts WHERE ` + "`" + `status` + "`" + `='publish' LIMIT ? OFFSET ?
+`
+
+type GetPublishedPostParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+type GetPublishedPostRow struct {
+	ID       int32  `json:"id"`
+	Title    string `json:"title"`
+	Content  string `json:"content"`
+	Category string `json:"category"`
+	Status   string `json:"status"`
+}
+
+func (q *Queries) GetPublishedPost(ctx context.Context, arg GetPublishedPostParams) ([]GetPublishedPostRow, error) {
+	rows, err := q.db.QueryContext(ctx, getPublishedPost, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetPublishedPostRow{}
+	for rows.Next() {
+		var i GetPublishedPostRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Content,
+			&i.Category,
+			&i.Status,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const updatePost = `-- name: UpdatePost :execresult

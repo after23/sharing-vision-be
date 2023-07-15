@@ -99,6 +99,28 @@ func (server *Server) listPost(ctx *gin.Context) {
 	return
 }
 
+func (server *Server) listPublishedPost(ctx *gin.Context) {
+	var req listPostRequest
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errResponse(err))
+		return
+	}
+
+	arg := db.GetPublishedPostParams{
+		Limit: req.PageSize,
+		Offset: (req.PageId-1)*req.PageSize,
+	}
+
+	posts, err := server.GetPublishedPost(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, posts)
+	return
+}
+
 type updatePostRequest struct {
 	Title       string `json:"title" binding:"required,min=20"`
 	Content     string `json:"content" binding:"required,min=200"`

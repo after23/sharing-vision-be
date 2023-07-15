@@ -10,10 +10,13 @@ INSERT INTO posts (
 );
 
 -- name: GetPost :many
-SELECT title, content, category, status FROM posts LIMIT ? OFFSET ?;
+SELECT id, title, content, category, status FROM posts LIMIT ? OFFSET ?;
+
+-- name: GetPublishedPost :many
+SELECT id, title, content, category, status FROM posts WHERE `status`='publish' LIMIT ? OFFSET ?;
 
 -- name: GetPostById :one
-SELECT title, content, category, status FROM posts where id=?;
+SELECT id, title, content, category, status FROM posts where id=?;
 
 -- name: UpdatePost :execresult
 UPDATE posts SET title=?, content=?, category=?, status=?, updated_date=? WHERE id=?;
