@@ -88,6 +88,31 @@ func TestGetPost(t *testing.T) {
 	}
 }
 
+func TestGetPublishedPost(t *testing.T) {
+	var ids []int64
+	for i := 0 ; i < 10; i++ {
+		_, id := createRandomPost(t)
+		ids = append(ids, id)
+	}
+
+	arg := GetPublishedPostParams{
+		Limit: 5,
+		Offset: 1,
+	}
+
+	posts, err := testQueries.GetPublishedPost(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, posts)
+
+	for _,v := range posts {
+		require.NotEmpty(t, v)
+	}
+
+	for _,v := range ids {
+		deleteRandomPost(t,v)
+	}
+}
+
 func TestUpdatePost(t *testing.T) {
 	_, id := createRandomPost(t)
 	require.NotZero(t, id)
