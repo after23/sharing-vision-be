@@ -17,9 +17,10 @@ jobs:
         image: mysql:latest
         env:
           MYSQL_ROOT_PASSWOED: secret
-          MYSQL_DB: article
+          MYSQL_DATABASE: article
         ports:
           - 1357:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v3
 
@@ -35,7 +36,7 @@ jobs:
           which migrate
 
       - name: Run migrations
-        run: make migrateup
+        run: make githubmigrateup
 
       - name: Test
         run: go test -v ./...
